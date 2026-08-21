@@ -46,5 +46,8 @@ async function login(req,res,next){
     }
 
 }
+async function profile(req,res) {
+    res.json("helo");
+}
 
-module.exports={addUser,login};
+module.exports={addUser,login,profile};
