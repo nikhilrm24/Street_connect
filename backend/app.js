@@ -1,14 +1,12 @@
 const express=require("express");
 const app=express();
 
-const {pool}=require("./src/db");
+const router = require("./src/routes/authRoutes");
+const errorMiddleware = require("./src/middleware/errorMiddleware");
 
 app.use(express.json());
-
-app.get("/",async (req,res)=>{
-    const result=await pool.query("select now()")
-    res.json(result.rows);
-})
+app.use("/api",router);
+app.use(errorMiddleware);
 
 app.listen(5000,()=>{
     console.log("server listneing on 5000");
