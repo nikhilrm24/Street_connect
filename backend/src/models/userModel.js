@@ -1,5 +1,6 @@
 const bcrypt=require("bcrypt");
 const {pool}=require("../db");
+require("dotenv").config();
 
 async function createUser(name,email,password,role) {
     try{
@@ -14,4 +15,15 @@ async function createUser(name,email,password,role) {
     
 }
 
-module.exports={createUser};
+async function findUserByEmail(email) {
+    try{
+        const result=await pool.query(`select * from users where email=$1 `,[email]);
+
+        return result.rows[0];
+    }catch(e){
+        throw e;
+    }
+    
+}
+
+module.exports={createUser,findUserByEmail};
