@@ -1,11 +1,13 @@
 const express=require("express");
 const app=express();
 
-const router = require("./src/routes/authRoutes");
+const authrouter = require("./src/routes/authRoutes");
+const vendorrouter=require("./src/routes/vendorRoutes")
 const errorMiddleware = require("./src/middleware/errorMiddleware");
 
 app.use(express.json());
-app.use("/api",router);
+app.use("/api",authrouter);
+app.use("/api",vendorrouter);
 app.use(errorMiddleware);
 
 app.listen(5000,()=>{

@@ -8,5 +8,13 @@ async function getAllVendors() {
         throw e;
     }
 }
+async function getVendorById(id) {
+    try{
+        const result=await pool.query("select * from vendors where vendor_id=$1",[id])
+        return result.rows[0];
+    }catch(e){
+        throw e;
+    }
+}
 
-module.exports={getAllVendors};
+module.exports={getAllVendors,getVendorById};
