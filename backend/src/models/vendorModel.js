@@ -17,4 +17,12 @@ async function getVendorById(id) {
     }
 }
 
-module.exports={getAllVendors,getVendorById};
+async function getVendorProfile(id) {
+    try{
+        const result=await pool.query("select * from vendors where user_id=$1",[id])
+        return result.rows[0];
+    }catch(e){
+        throw e;
+    }
+}
+module.exports={getAllVendors,getVendorById,getVendorProfile};

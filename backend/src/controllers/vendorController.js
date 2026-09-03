@@ -1,4 +1,4 @@
-const { getAllVendors, getVendorById } = require("../models/vendorModel");
+const { getAllVendors, getVendorById, getVendorProfile } = require("../models/vendorModel");
 const AppError = require("../utils/AppError");
 
 async function getVendors(req,res,next) {
@@ -25,4 +25,18 @@ async function getVendor(req,res,next) {
         next(e);
     }
 }
-module.exports={getVendors,getVendor};
+
+async function getProfile(req,res,next) {
+   const id=req.user.id;
+
+    try{
+         const profile=await getVendorProfile(id);
+         if(!profile){
+            throw new AppError("vendor not found");;
+         }
+         res.status(200).json({success:true,profile})
+    }catch(e){
+        next(e);
+    }
+}
+module.exports={getVendors,getVendor,getProfile};
