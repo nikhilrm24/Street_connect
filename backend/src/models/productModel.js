@@ -12,5 +12,17 @@ async function getProductsByVendor(vendorId) {
         throw e;
     }
 }
+async function getProductById(productId) {
+    try {
+        const result = await pool.query(
+            "SELECT * FROM products WHERE product_id = $1",
+            [productId]
+        );
 
-module.exports = { getProductsByVendor };
+        return result.rows[0];
+    } catch (e) {
+        throw e;
+    }
+}
+
+module.exports = { getProductsByVendor,getProductById };
