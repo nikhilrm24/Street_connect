@@ -1,0 +1,8 @@
+const express=require("express");
+const { getVendors } = require("../controllers/vendorController");
+const router=express.Router();
+
+
+router.get("/vendors",getVendors);
+
+module.exports=router;
