@@ -1,4 +1,4 @@
-const { getAllVendors, getVendorById, getVendorProfile } = require("../models/vendorModel");
+const { getAllVendors, getVendorById, getVendorProfile, updateVendorProfile } = require("../models/vendorModel");
 const AppError = require("../utils/AppError");
 
 async function getVendors(req,res,next) {
@@ -39,4 +39,18 @@ async function getProfile(req,res,next) {
         next(e);
     }
 }
-module.exports={getVendors,getVendor,getProfile};
+async function UpdateVendor(req,res,next) {
+    const id=req.user.id;
+    const {business_name,category,phone,location_info,delivary_info}=req.body;
+
+    try{
+        const profile=await updateVendorProfile(id,business_name,category,phone,location_info,delivary_info);
+        if(!profile){
+            throw new AppError("cannot update user profile");
+        }
+        res.status(200).json({success:true,message:"successfully updated"})
+    }catch(e){
+        next(e);
+    }
+}
+module.exports={getVendors,getVendor,getProfile,UpdateVendor};
