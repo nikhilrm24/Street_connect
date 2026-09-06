@@ -1,3 +1,4 @@
+const { addProduct } = require("../models/productModel");
 const { getAllVendors, getVendorById, getVendorProfile, updateVendorProfile } = require("../models/vendorModel");
 const AppError = require("../utils/AppError");
 
@@ -53,4 +54,5 @@ async function UpdateVendor(req,res,next) {
         next(e);
     }
 }
+
 module.exports={getVendors,getVendor,getProfile,UpdateVendor};
