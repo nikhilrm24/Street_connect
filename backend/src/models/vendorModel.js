@@ -38,4 +38,34 @@ async function updateVendorProfile(id,business_name,category,phone,location_info
         throw e;
     }
 }
-module.exports={getAllVendors,getVendorById,getVendorProfile,updateVendorProfile};
+async function getVendorLocation(vendorId) {
+    try {
+        const result = await pool.query(
+            `SELECT * FROM vendor_locations
+             WHERE vendor_id = $1`,
+            [vendorId]
+        );
+
+        return result.rows[0];
+    } catch (e) {
+        throw e;
+    }
+}
+async function updateVendorLocation(vendorId, latitude, longitude) {
+    try {
+        const result = await pool.query(
+            `UPDATE vendor_locations
+             SET latitude = $1,
+                 longitude = $2,
+                 updated_at = CURRENT_TIMESTAMP
+             WHERE vendor_id = $3
+             RETURNING *`,
+            [latitude, longitude, vendorId]
+        );
+
+        return result.rows[0];
+    } catch (e) {
+        throw e;
+    }
+}
+module.exports={getAllVendors,getVendorById,getVendorProfile,updateVendorProfile,getVendorLocation,updateVendorLocation};
