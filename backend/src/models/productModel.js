@@ -97,6 +97,14 @@ async function updateProduct(
         throw e;
     }
 }
+async function deleteProduct(vendorId,productId) {
+   try{
+     const res= await pool.query(`delete from products where product_id=$1 and vendor_id=$2 returning *`,[productId,vendorId]);
+    return res.rows[0];
+   }catch(e){
+    throw e;
+   }
+}
 
 
-module.exports = { getProductsByVendor,getProductById,addProduct,getVendorProducts,updateProduct};
+module.exports = { getProductsByVendor,getProductById,addProduct,getVendorProducts,updateProduct,deleteProduct};

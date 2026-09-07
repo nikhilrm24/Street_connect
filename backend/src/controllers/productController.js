@@ -1,4 +1,5 @@
-const { getProductsByVendor,getProductById } = require("../models/productModel");
+const { pool } = require("../db");
+const { getProductsByVendor,getProductById, deleteProduct } = require("../models/productModel");
 const AppError = require("../utils/AppError");
 
 async function getProducts(req,res,next) {
@@ -144,4 +145,19 @@ async function updateProductController(req, res, next) {
         next(e);
     }
 }
-module.exports={getProducts,getProduct,insertProduct,getVendorProductsController,updateProductController};
+async function deleteProductController(req,res,next) {
+    try{
+    const userId=req.user.id;
+    const {product_id}=req.params;
+    const venodrRes=await pool.query(`select * from vendors where user_id=$1`,[userId]);
+    const vendorId=venodrRes.rows[0].vendor_id;
+    const product=await deleteProduct(vendorId,product_id);
+     if (!product) {
+            throw new AppError("Product not found");
+        }
+    res.status(200).json({success:true,message:"succesfully delteted",product});
+    }catch(e){
+         next(e);
+    }
+}
+module.exports={getProducts,getProduct,insertProduct,getVendorProductsController,updateProductController,deleteProductController};
