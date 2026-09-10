@@ -71,7 +71,7 @@ function Home() {
           </div>
         </section>
 
-     
+       
         <footer className="mt-8 bg-gray-900 px-6 py-8 text-center text-white">
           <h2 className="text-xl font-bold tracking-tight text-emerald-400">Street Connect</h2>
           <p className="mt-2 text-sm text-gray-300">Shop Local. Support Local.</p>

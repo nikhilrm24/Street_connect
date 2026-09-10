@@ -1,6 +1,8 @@
 const express=require("express");
 const app=express();
+const cors=require("cors");
 
+app.use(cors());
 const authrouter = require("./src/routes/authRoutes");
 const vendorrouter=require("./src/routes/vendorRoutes");
 const categoryrouter=require("./src/routes/categoryRoute");
