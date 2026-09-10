@@ -6,7 +6,9 @@ function Register(){
     const[name,setName]=useState("");
     const[email,setEmail]=useState("");
     const[password,setPassword]=useState("");
-    
+    const [message,setMessage]=useState("");
+    const[msgType,setMsgType]=useState("");
+
     function handleSubmit(e){
         e.preventDefault();
         const data = {
@@ -16,9 +18,11 @@ function Register(){
           role: "customer"
 };
 axios.post("http://localhost:5000/api/auth/register",data).then((response)=>{
-    console.log(response);
+         setMessage(response.data.message);
+         setMsgType("success");
         }).catch((e)=>{
-        console.log(e.response);
+           setMessage(e.response.data.message);
+           setMsgType("error")
         })
 
     }
@@ -27,7 +31,7 @@ axios.post("http://localhost:5000/api/auth/register",data).then((response)=>{
     return(
         <div className="flex justify-center items-center my-30 ">
             
-            <form action="" className="flex flex-col min-h-[500px] justify-center items-center bg-gray-300 w-full max-w-md rounded-xl" 
+            <form  className="flex flex-col min-h-[500px] justify-center items-center bg-gray-300 w-full max-w-md rounded-xl" 
             onSubmit={handleSubmit}>
                 <h1 className="text-4xl font-bold mb-3.5 text-center text-green-900">Register</h1>
                 <label htmlFor="name"className="my-2 w-[250px] text-xl ">Name</label>
@@ -43,7 +47,9 @@ axios.post("http://localhost:5000/api/auth/register",data).then((response)=>{
                 value={password}
                 onChange={(e)=>setPassword(e.target.value)}/>
                 <button className="my-2 bg-green-800 p-2 rounded-2xl text-white mt-5 font-bold w-[100px]">Register</button>
+                 <p className={msgType=="success"?"text-green-600 font-bold":"text-red-600 "}>{message}</p>
             </form>
+           
         </div>
     )
 }

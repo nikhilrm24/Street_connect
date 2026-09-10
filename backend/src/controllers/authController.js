@@ -18,6 +18,9 @@ async function addUser(req,res,next) {
     }
      res.status(201).json({message:"successfully created user"});
     }catch(e){
+         if (e.code === "23505") {
+            return next(new AppError("Email already registered", 409));
+    }
         next(e);
     }
     
