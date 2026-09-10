@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 function Home() {
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900">
@@ -7,12 +8,16 @@ function Home() {
           <nav className="flex flex-row items-center justify-between px-6 py-4 sm:px-10">
             <h1 className="text-2xl font-bold tracking-tight text-emerald-700">Street Connect</h1>
             <div className="flex flex-row items-center gap-4 sm:gap-6">
+             <Link to="/login">
               <p className="cursor-pointer text-sm font-medium text-gray-600 transition-colors hover:text-emerald-700">
                 Login
               </p>
+             </Link>
+             <Link to="/register">
               <p className="cursor-pointer rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-700">
                 Register
               </p>
+             </Link>
             </div>
           </nav>
         </header>
