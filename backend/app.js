@@ -11,9 +11,10 @@ const errorMiddleware = require("./src/middleware/errorMiddleware");
 
 app.use(express.json());
 app.use("/api",authrouter);
+app.use("/api",productrouter)
 app.use("/api",vendorrouter);
 app.use("/api",categoryrouter)
-app.use("/api",productrouter)
+
 app.use(errorMiddleware);
 
 app.listen(5000,()=>{

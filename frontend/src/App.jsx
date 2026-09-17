@@ -6,6 +6,9 @@ import { BrowserRouter, Routes,Route} from "react-router-dom";
 import Vendors from "./pages/Vendors";
 import VendorDetails from "./pages/VendorDetails";
 import ProductDetails from "./pages/ProductDetails";
+import VendorDashboard from "./pages/vendor/VendorDashBoard";
+import VendorProducts from "./pages/vendor/VendorProduct";
+import AddProduct from "./pages/AddProduct";
 
 function App(){
     return(
@@ -21,6 +24,23 @@ function App(){
                 <Route path="/vendors" element={<Vendors/>}/>
                 <Route path="/vendors/:id" element={<VendorDetails/>}/>
                 <Route path="/products/:id" element={<ProductDetails/>}/>
+                <Route path="/vendor/dashboard" element={<ProtectedRoute><VendorDashboard/></ProtectedRoute>}/>
+                <Route
+                      path="/vendors/products"
+                       element={
+                            <ProtectedRoute>
+                               <VendorProducts />
+                            </ProtectedRoute>
+                             }
+                            />
+                            <Route
+                            path="/vendors/products/add"
+                            element={
+                                <ProtectedRoute>
+                                    <AddProduct />
+                                </ProtectedRoute>
+                            }
+                        />
              </Routes>
          
          </BrowserRouter>

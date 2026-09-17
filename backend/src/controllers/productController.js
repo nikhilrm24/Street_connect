@@ -1,5 +1,5 @@
 const { pool } = require("../db");
-const { getProductsByVendor,getProductById, deleteProduct } = require("../models/productModel");
+const { getProductsByVendor,getProductById, deleteProduct,getVendorProducts ,addProduct} = require("../models/productModel");
 const AppError = require("../utils/AppError");
 
 async function getProducts(req,res,next) {
@@ -33,8 +33,23 @@ async function getProduct(req, res, next) {
 }
 
 async function insertProduct(req, res, next) {
+
     try {
-        const id = req.user.id;
+
+        const userId = req.user.id;
+
+        const vendorResult = await pool.query(
+            `SELECT vendor_id
+             FROM vendors
+             WHERE user_id = $1`,
+            [userId]
+        );
+
+        if (vendorResult.rows.length === 0) {
+            throw new AppError("Vendor not found");
+        }
+
+        const vendorId = vendorResult.rows[0].vendor_id;
 
         const {
             category_id,
@@ -45,7 +60,7 @@ async function insertProduct(req, res, next) {
         } = req.body;
 
         const product = await addProduct(
-            id,
+            vendorId,
             category_id,
             product_name,
             description,
@@ -53,13 +68,9 @@ async function insertProduct(req, res, next) {
             stock
         );
 
-        if (!product) {
-            throw new AppError("Cannot add product");
-        }
-
         res.status(201).json({
             success: true,
-            message: "Successfully created",
+            message: "Product added successfully",
             product
         });
 
