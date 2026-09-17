@@ -50,10 +50,25 @@ async function getProfile(req,res,next) {
 }
 async function UpdateVendor(req,res,next) {
     const id=req.user.id;
-    const {business_name,category,phone,location_info,delivary_info}=req.body;
+    const {
+    business_name,
+    category,
+    phone,
+    location_info,
+    delivary_info,
+    shop_image
+} = req.body;
 
     try{
-        const profile=await updateVendorProfile(id,business_name,category,phone,location_info,delivary_info);
+        const profile = await updateVendorProfile(
+    id,
+    business_name,
+    category,
+    phone,
+    location_info,
+    delivary_info,
+    shop_image
+);
         if(!profile){
             throw new AppError("cannot update user profile");
         }

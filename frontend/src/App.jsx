@@ -10,6 +10,8 @@ import VendorDashboard from "./pages/vendor/VendorDashBoard";
 import VendorProducts from "./pages/vendor/VendorProduct";
 import AddProduct from "./pages/vendor/AddProduct";
 import EditProduct from "./pages/vendor/EditProduct";
+import VendorProfile from "./pages/vendor/VendorProfile";
+import EditVendorProfile from "./pages/vendor/EditVendorProfile";
 
 function App(){
     return(
@@ -50,6 +52,23 @@ function App(){
                             </ProtectedRoute>
                         }
                     />
+                                <Route
+                path="/vendor/profile"
+                element={
+                    <ProtectedRoute>
+                        <VendorProfile />
+                    </ProtectedRoute>
+                }
+            />
+
+                    <Route
+                path="/vendor/profile/edit"
+                element={
+                    <ProtectedRoute>
+                        <EditVendorProfile />
+                    </ProtectedRoute>
+                }
+            />
              </Routes>
          
          </BrowserRouter>

@@ -25,13 +25,36 @@ async function getVendorProfile(id) {
         throw e;
     }
 }
-async function updateVendorProfile(id,business_name,category,phone,location_info,delivary_info) {
+async function updateVendorProfile(
+    id,
+    business_name,
+    category,
+    phone,
+    location_info,
+    delivary_info,
+    shop_image
+){
     try{
-        const result=await pool.query(`update vendors set 
-            business_name=$1,
-            category=$2,phone=$3,location_info=$4,delivary_info=$5
-            where user_id=$6 returning *
-            `,[business_name,category,phone,location_info,delivary_info,id])
+        const result = await pool.query(
+    `UPDATE vendors
+     SET business_name = $1,
+         category = $2,
+         phone = $3,
+         location_info = $4,
+         delivary_info = $5,
+         shop_image = $6
+     WHERE user_id = $7
+     RETURNING *`,
+    [
+        business_name,
+        category,
+        phone,
+        location_info,
+        delivary_info,
+        shop_image,
+        id
+    ]
+);
 
             return result.rows[0];
     }catch(e){
