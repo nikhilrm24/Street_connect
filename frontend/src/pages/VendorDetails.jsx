@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function VendorDetails() {
 
     const { id } = useParams();
-
+    const navigate=useNavigate();
     const [vendor, setVendor] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -108,6 +109,9 @@ return (
             <div
                 key={product.product_id}
                 className="border rounded-lg p-4 shadow-sm"
+                onClick={()=>{
+                       navigate(`/products/${product.product_id}`);
+                }}
             >
                 <h3 className="text-lg font-semibold">
                     {product.product_name}
