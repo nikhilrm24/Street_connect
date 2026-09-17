@@ -8,7 +8,8 @@ import VendorDetails from "./pages/VendorDetails";
 import ProductDetails from "./pages/ProductDetails";
 import VendorDashboard from "./pages/vendor/VendorDashBoard";
 import VendorProducts from "./pages/vendor/VendorProduct";
-import AddProduct from "./pages/AddProduct";
+import AddProduct from "./pages/vendor/AddProduct";
+import EditProduct from "./pages/vendor/EditProduct";
 
 function App(){
     return(
@@ -41,6 +42,14 @@ function App(){
                                 </ProtectedRoute>
                             }
                         />
+                        <Route
+                        path="/vendor/products/edit/:id"
+                        element={
+                            <ProtectedRoute>
+                                <EditProduct />
+                            </ProtectedRoute>
+                        }
+                    />
              </Routes>
          
          </BrowserRouter>

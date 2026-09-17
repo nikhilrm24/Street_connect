@@ -156,19 +156,40 @@ async function updateProductController(req, res, next) {
         next(e);
     }
 }
-async function deleteProductController(req,res,next) {
-    try{
-    const userId=req.user.id;
-    const {product_id}=req.params;
-    const venodrRes=await pool.query(`select * from vendors where user_id=$1`,[userId]);
-    const vendorId=venodrRes.rows[0].vendor_id;
-    const product=await deleteProduct(vendorId,product_id);
-     if (!product) {
+async function deleteProductController(req, res, next) {
+
+    try {
+
+        const userId = req.user.id;
+        const { id } = req.params;
+
+        const vendorRes = await pool.query(
+            `SELECT vendor_id
+             FROM vendors
+             WHERE user_id = $1`,
+            [userId]
+        );
+
+        if (vendorRes.rows.length === 0) {
+            throw new AppError("Vendor not found");
+        }
+
+        const vendorId = vendorRes.rows[0].vendor_id;
+
+        const product = await deleteProduct(vendorId, id);
+
+        if (!product) {
             throw new AppError("Product not found");
         }
-    res.status(200).json({success:true,message:"succesfully delteted",product});
-    }catch(e){
-         next(e);
+
+        res.status(200).json({
+            success: true,
+            message: "Successfully deleted",
+            product
+        });
+
+    } catch (e) {
+        next(e);
     }
 }
 module.exports={getProducts,getProduct,insertProduct,getVendorProductsController,updateProductController,deleteProductController};
