@@ -27,9 +27,10 @@ function Home() {
             Shop Local, Support Local
           </h2>
           <p className="max-w-md text-base text-gray-600 sm:text-lg">Find Local Vendors Near You</p>
+          <Link to="/vendors">
           <button className="mt-2 rounded-lg bg-emerald-600 px-8 py-3 text-base font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700">
             Explore Vendors
-          </button>
+          </button></Link>
         </section>
 
       

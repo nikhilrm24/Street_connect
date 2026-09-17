@@ -1,7 +1,15 @@
 const { addProduct } = require("../models/productModel");
-const { getAllVendors, getVendorById, getVendorProfile, updateVendorProfile } = require("../models/vendorModel");
+const {
+    getAllVendors,
+    getVendorById,
+    getVendorProfile,
+    updateVendorProfile,
+    getVendorLocation,
+    updateVendorLocation,
+    getAllVendorLocations
+} = require("../models/vendorModel");
 const AppError = require("../utils/AppError");
-
+const { pool } = require("../db");
 async function getVendors(req,res,next) {
     
     try{
@@ -123,5 +131,17 @@ async function updateLocation(req, res, next) {
         next(e);
     }
 }
+async function getAllLocations(req, res, next) {
+    try {
+        const locations = await getAllVendorLocations();
 
-module.exports={getVendors,getVendor,getProfile,UpdateVendor,getLocation,updateLocation};
+        res.status(200).json({
+            success: true,
+            locations
+        });
+    } catch (e) {
+        next(e);
+    }
+}
+
+module.exports={getVendors,getVendor,getProfile,UpdateVendor,getLocation,updateLocation,getAllLocations};

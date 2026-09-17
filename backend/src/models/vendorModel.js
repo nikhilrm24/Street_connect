@@ -1,5 +1,5 @@
-const {pool}=require("../db");
 
+const { pool } = require("../db");
 async function getAllVendors() {
     try{
         const result=await pool.query("select * from vendors ")
@@ -68,4 +68,23 @@ async function updateVendorLocation(vendorId, latitude, longitude) {
         throw e;
     }
 }
-module.exports={getAllVendors,getVendorById,getVendorProfile,updateVendorProfile,getVendorLocation,updateVendorLocation};
+async function getAllVendorLocations() {
+    try {
+        const result = await pool.query(
+            `SELECT * FROM vendor_locations`
+        );
+
+        return result.rows;
+    } catch (e) {
+        throw e;
+    }
+}
+module.exports = {
+    getAllVendors,
+    getVendorById,
+    getVendorProfile,
+    updateVendorProfile,
+    getVendorLocation,
+    updateVendorLocation,
+    getAllVendorLocations
+};
