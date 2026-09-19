@@ -75,21 +75,64 @@ async function getVendorLocation(vendorId) {
     }
 }
 async function updateVendorLocation(vendorId, latitude, longitude) {
-    try {
-        const result = await pool.query(
-            `UPDATE vendor_locations
-             SET latitude = $1,
-                 longitude = $2,
-                 updated_at = CURRENT_TIMESTAMP
-             WHERE vendor_id = $3
-             RETURNING *`,
-            [latitude, longitude, vendorId]
-        );
+  try {
+    const result = await pool.query(
+      `INSERT INTO vendor_locations
+       (vendor_id, latitude, longitude)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (vendor_id)
+       DO UPDATE SET
+         latitude = EXCLUDED.latitude,
+         longitude = EXCLUDED.longitude,
+         updated_at = CURRENT_TIMESTAMP
+       RETURNING *`,
+      [vendorId, latitude, longitude]
+    );
 
-        return result.rows[0];
-    } catch (e) {
-        throw e;
-    }
+    return result.rows[0];
+  } catch (e) {
+    throw e;
+  }
+}
+async function createVendor(
+  userId,
+  business_name,
+  category,
+  phone,
+  location_info,
+  delivary_info,
+  shop_image
+) {
+  try {
+    const result = await pool.query(
+      `INSERT INTO vendors
+      (
+        user_id,
+        business_name,
+        category,
+        phone,
+        location_info,
+        delivary_info,
+        shop_image
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING *`,
+      [
+        userId,
+        business_name,
+        category,
+        phone,
+        location_info,
+        delivary_info,
+        shop_image
+      ]
+    );
+
+    return result.rows[0];
+
+  } catch (e) {
+    throw e;
+  }
 }
 async function getAllVendorLocations() {
     try {
@@ -109,5 +152,6 @@ module.exports = {
     updateVendorProfile,
     getVendorLocation,
     updateVendorLocation,
-    getAllVendorLocations
+    getAllVendorLocations,
+    createVendor
 };

@@ -109,42 +109,34 @@ async function getLocation(req, res, next) {
     }
 }
 async function updateLocation(req, res, next) {
-    try {
-        const userId = req.user.id;
+  try {
+    const userId = req.user.id;
+    const { latitude, longitude } = req.body;
 
-        const { latitude, longitude } = req.body;
+    const vendorRes = await pool.query(
+      `SELECT vendor_id FROM vendors WHERE user_id = $1`,
+      [userId]
+    );
 
-        const vendorRes = await pool.query(
-            `SELECT vendor_id FROM vendors
-             WHERE user_id = $1`,
-            [userId]
-        );
-
-        if (vendorRes.rows.length === 0) {
-            throw new AppError("Vendor not found");
-        }
-
-        const vendorId = vendorRes.rows[0].vendor_id;
-
-        const location = await updateVendorLocation(
-            vendorId,
-            latitude,
-            longitude
-        );
-
-        if (!location) {
-            throw new AppError("Location not found");
-        }
-
-        res.status(200).json({
-            success: true,
-            message: "Location successfully updated",
-            location
-        });
-
-    } catch (e) {
-        next(e);
+    if (vendorRes.rows.length === 0) {
+      throw new AppError("Vendor not found", 404);
     }
+
+    const vendorId = vendorRes.rows[0].vendor_id;
+
+    const location = await updateVendorLocation(
+      vendorId,
+      latitude,
+      longitude
+    );
+
+    res.status(200).json({
+      success: true,
+      location
+    });
+  } catch (error) {
+    next(error);
+  }
 }
 async function getAllLocations(req, res, next) {
     try {

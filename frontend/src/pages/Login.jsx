@@ -9,26 +9,40 @@ function Login(){
     const [message,setMessage]=useState("");
     const[msgType,setMsgType]=useState("");
 
-    function handleSubmit(e){
-        e.preventDefault();
-        const data={
-            email,
-            password
-        }
-        axios.post("http://localhost:5000/api/auth/login",data).
-        then((response)=>{
-            localStorage.setItem('token',response.data.token)
-            setMessage("Login Successfull");
-            setMsgType("success");
-            navigate("/home");
-            
-        }).catch((e)=>{
-            setMessage(e.response.data.message);
-            setMsgType("error");
-            
-        })
+   async function handleSubmit(e) {
+  e.preventDefault();
 
+  const data = {
+    email,
+    password,
+  };
+
+  try {
+    const response = await axios.post(
+      "http://localhost:5000/api/auth/login",
+      data
+    );
+
+    localStorage.setItem("token", response.data.token);
+
+    setMessage("Login Successful");
+    setMsgType("success");
+
+    const role = response.data.user.role;
+
+    if (role === "vendor") {
+      navigate("/vendor/dashboard");
+    } else if (role === "admin") {
+      navigate("/admin/dashboard");
+    } else {
+      navigate("/vendors");
     }
+
+  } catch (e) {
+    setMessage(e.response?.data?.message || "Login failed");
+    setMsgType("error");
+  }
+}
     return(
         <div className="flex justify-center items-center my-30 ">
             

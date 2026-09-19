@@ -1,30 +1,73 @@
-import {GoogleMap,LoadScript,Marker} from '@react-google-maps/api';
-const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-const containerStyle={
-    width:"100%",
-    height:"400px",
-};
+import { useEffect, useState } from "react";
+import axios from "axios";
+import {
+  GoogleMap,
+  LoadScript,
+  Marker,
+} from "@react-google-maps/api";
 
+function Map() {
+  const [center, setCenter] = useState({
+    lat: 12.9716,
+    lng: 77.5946,
+  });
 
-function Map({location,vendorLocations}){
-    return(
-        <LoadScript googleMapsApiKey={apiKey}>
-            <GoogleMap
-            mapContainerStyle={containerStyle}
-            center={location}
-            zoom={11}>
-                {vendorLocations.map((vendor)=>(
-                    <Marker
-                    key={vendor.vendor_id}
-                    position={{
-                        lat:Number(vendor.latitude),
-                        lng:Number(vendor.longitude),
-                    }}
-                    />
-                ))}
+  const [vendorLocations, setVendorLocations] = useState([]);
 
-            </GoogleMap>
-        </LoadScript>
-    )
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setCenter({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      },
+      (error) => {
+        console.log("Location permission denied");
+      }
+    );
+  }, []);
+
+  useEffect(() => {
+    const fetchVendorLocations = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/api/vendors/locations"
+        );
+
+        setVendorLocations(response.data.locations);
+      } catch (error) {
+        console.error("Failed to load vendor locations", error);
+      }
+    };
+
+    fetchVendorLocations();
+  }, []);
+
+  return (
+    <LoadScript
+      googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+    >
+      <GoogleMap
+        mapContainerStyle={{
+          width: "100%",
+          height: "500px",
+        }}
+        center={center}
+        zoom={13}
+      >
+        {vendorLocations.map((location) => (
+          <Marker
+            key={location.location_id}
+            position={{
+              lat: Number(location.latitude),
+              lng: Number(location.longitude),
+            }}
+          />
+        ))}
+      </GoogleMap>
+    </LoadScript>
+  );
 }
+
 export default Map;
