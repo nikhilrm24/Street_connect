@@ -10,6 +10,7 @@ import Register from "./pages/Register";
 import Vendors from "./pages/Vendors";
 import VendorDetails from "./pages/VendorDetails";
 import ProductDetails from "./pages/ProductDetails";
+import Cart from "./pages/Cart";
 
 
 import VendorDashboard from "./pages/vendor/VendorDashBoard";
@@ -62,13 +63,18 @@ function App() {
           element={<ProductDetails />}
         />
 
+        <Route
+          path="/cart"
+          element={<Cart />}
+        />
+
 
        
 
         <Route
           path="/vendor/dashboard"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["vendor"]}>
               <VendorDashboard />
             </ProtectedRoute>
           }
@@ -77,7 +83,7 @@ function App() {
         <Route
           path="/vendor/products"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["vendor"]}>
               <VendorProducts />
             </ProtectedRoute>
           }
@@ -86,7 +92,7 @@ function App() {
         <Route
           path="/vendor/products/add"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["vendor"]}>
               <AddProduct />
             </ProtectedRoute>
           }
@@ -95,7 +101,7 @@ function App() {
         <Route
           path="/vendor/products/edit/:id"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["vendor"]}>
               <EditProduct />
             </ProtectedRoute>
           }
@@ -104,7 +110,7 @@ function App() {
         <Route
           path="/vendor/profile"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["vendor"]}>
               <VendorProfile />
             </ProtectedRoute>
           }
@@ -113,7 +119,7 @@ function App() {
         <Route
           path="/vendor/profile/edit"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["vendor"]}>
               <EditVendorProfile />
             </ProtectedRoute>
           }
@@ -122,7 +128,7 @@ function App() {
         <Route
           path="/vendor/location"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["vendor"]}>
               <VendorLocation />
             </ProtectedRoute>
           }
@@ -130,7 +136,7 @@ function App() {
        <Route
   path="/vendor/orders"
   element={
-    <ProtectedRoute>
+    <ProtectedRoute allowedRoles={["vendor"]}>
       <VendorOrders />
     </ProtectedRoute>
   }
@@ -138,7 +144,7 @@ function App() {
        <Route
   path="/vendor/notifications"
   element={
-    <ProtectedRoute>
+    <ProtectedRoute allowedRoles={["vendor"]}>
       <VendorNotifications />
     </ProtectedRoute>
   }

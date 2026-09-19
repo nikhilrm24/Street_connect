@@ -5,10 +5,13 @@ require("dotenv").config();
 function verifyToken(req,res,next){
     try{
     const authHeader=req.headers.authorization;
-    if(!authHeader){
-       throw new AppError("auth header not found",404); 
+     if(!authHeader || !authHeader.startsWith("Bearer ")){
+         throw new AppError("Bearer token required",401); 
     }
-    const token=authHeader.split(" ")[1];
+     const token=authHeader.slice("Bearer ".length).trim();
+     if (!token) {
+         throw new AppError("Bearer token required",401);
+     }
     const decoded=jwt.verify(token,process.env.JWT_SECRET);
     req.user=decoded;
     next();
