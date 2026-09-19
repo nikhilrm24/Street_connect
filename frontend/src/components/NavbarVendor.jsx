@@ -1,7 +1,23 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function NavbarVendor() {
   const navigate = useNavigate();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    axios.get("http://localhost:5000/api/vendors/notifications", {
+      headers: { Authorization: `Bearer ${token}` }
+    }).then((response) => {
+      setUnreadCount(response.data.unread_count || 0);
+    }).catch(() => {
+      setUnreadCount(0);
+    });
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -62,6 +78,18 @@ function NavbarVendor() {
             className="hover:text-gray-300"
           >
             Orders
+          </Link>
+
+          <Link
+            to="/vendor/notifications"
+            className="relative hover:text-gray-300"
+          >
+            Notifications
+            {unreadCount > 0 && (
+              <span className="ml-2 rounded-full bg-red-500 px-2 py-0.5 text-xs font-bold text-white">
+                {unreadCount}
+              </span>
+            )}
           </Link>
 
           <button

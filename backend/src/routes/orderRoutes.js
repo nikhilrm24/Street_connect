@@ -4,6 +4,7 @@ const express = require("express");
 const {
   getVendorOrdersController,
   getVendorSalesSummaryController,
+  getVendorNotificationsController,
   updateVendorOrderStatus
 } = require("../controllers/orderController");
 
@@ -24,6 +25,13 @@ router.get(
   verifyToken,
   roleMiddleware("vendor"),
   getVendorSalesSummaryController
+);
+
+router.get(
+  "/vendors/notifications",
+  verifyToken,
+  roleMiddleware("vendor"),
+  getVendorNotificationsController
 );
 
 router.put(

@@ -20,6 +20,7 @@ import VendorProfile from "./pages/vendor/VendorProfile";
 import EditVendorProfile from "./pages/vendor/EditVendorProfile";
 import VendorLocation from "./pages/vendor/VendorLocations";
 import VendorOrders from "./pages/vendor/VendorOrders";
+import VendorNotifications from "./pages/vendor/VendorNotifications";
 function App() {
   return (
     <BrowserRouter>
@@ -134,6 +135,14 @@ function App() {
     </ProtectedRoute>
   }
 />
+       <Route
+  path="/vendor/notifications"
+  element={
+    <ProtectedRoute>
+      <VendorNotifications />
+    </ProtectedRoute>
+  }
+ />
       </Routes>
     </BrowserRouter>
     

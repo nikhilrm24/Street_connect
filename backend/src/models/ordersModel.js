@@ -112,6 +112,35 @@ async function getVendorSalesSummary(vendorId) {
   }
 }
 
+async function getVendorNotifications(vendorId) {
+  const result = await pool.query(
+    `SELECT
+      o.order_id,
+      o.status,
+      o.total_amount,
+      o.created_at,
+      u.name AS customer_name
+     FROM orders o
+     JOIN users u ON o.customer_id = u.id
+     WHERE o.vendor_id = $1
+     ORDER BY o.created_at DESC
+     LIMIT 20`,
+    [vendorId]
+  );
+
+  return result.rows.map((order) => ({
+    id: `order-${order.order_id}-${order.status}`,
+    order_id: order.order_id,
+    type: order.status === "pending" ? "new_order" : "order_update",
+    title: order.status === "pending" ? "New order received" : "Order status updated",
+    message: `Order #${order.order_id} from ${order.customer_name || "a customer"} is ${order.status}.`,
+    status: order.status,
+    total_amount: order.total_amount,
+    created_at: order.created_at,
+    read: false
+  }));
+}
+
 async function updateOrderStatus(orderId, vendorId, status) {
   const result = await pool.query(
     `UPDATE orders
@@ -153,5 +182,6 @@ async function updateOrderStatus(orderId, vendorId, status) {
 module.exports = {
   getVendorOrders,
   getVendorSalesSummary,
+  getVendorNotifications,
   updateOrderStatus
 };
