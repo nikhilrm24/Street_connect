@@ -17,6 +17,9 @@ function verifyToken(req,res,next){
     next();
 
     }catch(e){
+        if (e.name === "TokenExpiredError" || e.name === "JsonWebTokenError") {
+            return next(new AppError("Invalid or expired token", 401));
+        }
         next(e);
     }
 }

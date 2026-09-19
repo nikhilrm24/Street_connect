@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Login(){
     const navigate=useNavigate();
@@ -35,7 +35,7 @@ function Login(){
     } else if (role === "admin") {
       navigate("/admin/dashboard");
     } else {
-      navigate("/vendors");
+      navigate("/home");
     }
 
   } catch (e) {
@@ -60,6 +60,12 @@ function Login(){
                 onChange={(e)=>setPassword(e.target.value)}/>
                 <button className="my-2 bg-green-800 p-2 rounded-2xl text-white mt-5 font-bold w-[100px]">Login</button>
                  <p className={msgType==="success"?"text-green-600 font-bold":"text-red-600 "}>{message}</p>
+                 <p className="mt-4 text-sm text-gray-600">
+                  Don&apos;t have an account?{" "}
+                  <Link to="/register" className="font-semibold text-green-800 hover:underline">
+                    Register
+                  </Link>
+                 </p>
             </form>
            
         </div>

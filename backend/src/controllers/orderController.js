@@ -1,4 +1,7 @@
 const {
+  createCustomerOrders,
+  getCustomerOrders,
+  getCustomerNotifications,
   getVendorOrders,
   getVendorSalesSummary,
   getVendorNotifications,
@@ -7,6 +10,38 @@ const {
 
 const { pool } = require("../db");
 const AppError = require("../utils/AppError");
+
+async function createCustomerOrdersController(req, res, next) {
+  try {
+    const { items, delivery_type, delivery_address } = req.body;
+
+    if (!Array.isArray(items) || items.length === 0) {
+      throw new AppError("Cart is empty", 400);
+    }
+
+    if (!["pickup", "delivery"].includes(delivery_type)) {
+      throw new AppError("Invalid delivery type", 400);
+    }
+
+    if (delivery_type === "delivery" && !String(delivery_address || "").trim()) {
+      throw new AppError("Delivery address is required", 400);
+    }
+
+    const orders = await createCustomerOrders(
+      req.user.id,
+      items,
+      delivery_type,
+      String(delivery_address || "").trim()
+    );
+
+    res.status(201).json({ success: true, orders });
+  } catch (error) {
+    if (error.message === "Cart is empty" || error.message === "Invalid cart item" || error.message === "Product not found" || error.message.includes("vendor") || error.message.includes("stock")) {
+      return next(new AppError(error.message, 400));
+    }
+    next(error);
+  }
+}
 
 async function getVendorOrdersController(req, res, next) {
   try {
@@ -35,6 +70,24 @@ async function getVendorOrdersController(req, res, next) {
 
   } catch (e) {
     next(e);
+  }
+}
+
+async function getCustomerOrdersController(req, res, next) {
+  try {
+    const orders = await getCustomerOrders(req.user.id);
+    res.status(200).json({ success: true, orders });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function getCustomerNotificationsController(req, res, next) {
+  try {
+    const notifications = await getCustomerNotifications(req.user.id);
+    res.status(200).json({ success: true, notifications, unread_count: notifications.length });
+  } catch (error) {
+    next(error);
   }
 }
 
@@ -145,6 +198,9 @@ async function updateVendorOrderStatus(req, res, next) {
 
 
 module.exports = {
+  createCustomerOrdersController,
+  getCustomerOrdersController,
+  getCustomerNotificationsController,
   getVendorOrdersController,
   getVendorSalesSummaryController,
   getVendorNotificationsController,

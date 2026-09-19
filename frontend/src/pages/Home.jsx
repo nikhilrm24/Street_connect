@@ -1,5 +1,22 @@
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 function Home() {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  let isCustomer = false;
+
+  try {
+    const payload = token ? JSON.parse(atob(token.split(".")[1])) : null;
+    isCustomer = payload?.role === "customer";
+  } catch {
+    isCustomer = false;
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900">
       <div className="mx-auto max-w-6xl">
@@ -8,16 +25,47 @@ function Home() {
           <nav className="flex flex-row items-center justify-between px-6 py-4 sm:px-10">
             <h1 className="text-2xl font-bold tracking-tight text-emerald-700">Street Connect</h1>
             <div className="flex flex-row items-center gap-4 sm:gap-6">
-             <Link to="/login">
-              <p className="cursor-pointer text-sm font-medium text-gray-600 transition-colors hover:text-emerald-700">
-                Login
-              </p>
-             </Link>
-             <Link to="/register">
-              <p className="cursor-pointer rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-700">
-                Register
-              </p>
-             </Link>
+             {isCustomer && (
+              <>
+               <Link to="/orders">
+                <p className="cursor-pointer text-sm font-medium text-gray-600 transition-colors hover:text-emerald-700">
+                  My Orders
+                </p>
+               </Link>
+               <Link to="/notifications">
+                <p className="cursor-pointer text-sm font-medium text-gray-600 transition-colors hover:text-emerald-700">
+                  Notifications
+                </p>
+               </Link>
+               <Link to="/cart">
+                <p className="cursor-pointer text-sm font-medium text-gray-600 transition-colors hover:text-emerald-700">
+                  Cart
+                </p>
+               </Link>
+              </>
+             )}
+             {token ? (
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-700"
+              >
+                Logout
+              </button>
+             ) : (
+              <>
+               <Link to="/login">
+                <p className="cursor-pointer text-sm font-medium text-gray-600 transition-colors hover:text-emerald-700">
+                  Login
+                </p>
+               </Link>
+               <Link to="/register">
+                <p className="cursor-pointer rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-700">
+                  Register
+                </p>
+               </Link>
+              </>
+             )}
             </div>
           </nav>
         </header>

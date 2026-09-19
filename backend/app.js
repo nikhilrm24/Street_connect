@@ -13,11 +13,13 @@ const categoryrouter=require("./src/routes/categoryRoute");
 const productrouter=require("./src/routes/productRoute")
 const errorMiddleware = require("./src/middleware/errorMiddleware");
 const orderrouter = require("./src/routes/orderRoutes");
+const adminrouter = require("./src/routes/adminRoutes");
 
 app.use(express.json());
 app.use("/api", authrouter);
 app.use("/api", productrouter);
 app.use("/api", orderrouter);
+app.use("/api", adminrouter);
 app.use("/api", vendorrouter);
 app.use("/api", categoryrouter);
 

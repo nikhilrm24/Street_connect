@@ -3,6 +3,9 @@ const express = require("express");
 
 const {
   getVendorOrdersController,
+  createCustomerOrdersController,
+  getCustomerOrdersController,
+  getCustomerNotificationsController,
   getVendorSalesSummaryController,
   getVendorNotificationsController,
   updateVendorOrderStatus
@@ -12,6 +15,27 @@ const verifyToken = require("../middleware/authMiddleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
 
 const router = express.Router();
+
+router.post(
+  "/orders",
+  verifyToken,
+  roleMiddleware("customer"),
+  createCustomerOrdersController
+);
+
+router.get(
+  "/orders/customer",
+  verifyToken,
+  roleMiddleware("customer"),
+  getCustomerOrdersController
+);
+
+router.get(
+  "/orders/notifications",
+  verifyToken,
+  roleMiddleware("customer"),
+  getCustomerNotificationsController
+);
 
 router.get(
   "/vendors/orders",

@@ -11,6 +11,10 @@ import Vendors from "./pages/Vendors";
 import VendorDetails from "./pages/VendorDetails";
 import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
+import CustomerOrders from "./pages/CustomerOrders";
+import CustomerNotifications from "./pages/CustomerNotifications";
+import AdminDashboard from "./pages/AdminDashboard";
 
 
 import VendorDashboard from "./pages/vendor/VendorDashBoard";
@@ -66,6 +70,42 @@ function App() {
         <Route
           path="/cart"
           element={<Cart />}
+        />
+
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute allowedRoles={["customer"]}>
+              <Checkout />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute allowedRoles={["customer"]}>
+              <CustomerOrders />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute allowedRoles={["customer"]}>
+              <CustomerNotifications />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
         />
 
 
