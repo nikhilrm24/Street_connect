@@ -70,7 +70,7 @@ function Home() {
           </nav>
         </header>
 
-        <section className="flex min-h-[500px] flex-col items-center justify-center gap-5 px-6 py-16 text-center">
+        <section className="flex min-h-125 flex-col items-center justify-center gap-5 px-6 py-16 text-center">
           <h2 className="max-w-2xl text-4xl font-bold leading-tight tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
             Shop Local, Support Local
           </h2>

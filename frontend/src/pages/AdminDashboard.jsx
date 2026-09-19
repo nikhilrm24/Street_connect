@@ -68,7 +68,7 @@ function AdminDashboard() {
                         <section className="mt-8 rounded-xl bg-white p-5 shadow-sm">
                             <h2 className="text-xl font-bold text-gray-900">Vendors</h2>
                             <div className="mt-4 overflow-x-auto">
-                                <table className="w-full min-w-[600px] text-left text-sm">
+                                <table className="w-full min-w-150 text-left text-sm">
                                     <thead className="border-b border-gray-200 text-gray-500"><tr><th className="p-3">Shop</th><th className="p-3">Category</th><th className="p-3">Email</th><th className="p-3">Status</th></tr></thead>
                                     <tbody>{overview.vendors.map((vendor) => <tr key={vendor.vendor_id} className="border-b border-gray-100"><td className="p-3 font-semibold">{vendor.business_name}</td><td className="p-3">{vendor.category}</td><td className="p-3">{vendor.email}</td><td className="p-3 capitalize">{vendor.is_available ? "Open" : "Closed"}</td></tr>)}</tbody>
                                 </table>
