@@ -2,7 +2,7 @@
 const { pool } = require("../db");
 async function getAllVendors() {
     try{
-        const result=await pool.query("select * from vendors ")
+        const result=await pool.query(`SELECT *, COALESCE(is_available, true) AS is_available FROM vendors`)
     return result.rows
     }catch(e){
         throw e;
@@ -10,7 +10,7 @@ async function getAllVendors() {
 }
 async function getVendorById(id) {
     try{
-        const result=await pool.query("select * from vendors where vendor_id=$1",[id])
+        const result=await pool.query(`SELECT *, COALESCE(is_available, true) AS is_available FROM vendors where vendor_id=$1`,[id])
         return result.rows[0];
     }catch(e){
         throw e;
@@ -19,7 +19,7 @@ async function getVendorById(id) {
 
 async function getVendorProfile(id) {
     try{
-        const result=await pool.query("select * from vendors where user_id=$1",[id])
+        const result=await pool.query(`SELECT *, COALESCE(is_available, true) AS is_available FROM vendors where user_id=$1`,[id])
         return result.rows[0];
     }catch(e){
         throw e;
@@ -44,7 +44,7 @@ async function updateVendorProfile(
          delivary_info = $5,
          shop_image = $6
      WHERE user_id = $7
-     RETURNING *`,
+     RETURNING *, COALESCE(is_available, true) AS is_available`,
     [
         business_name,
         category,
@@ -60,6 +60,22 @@ async function updateVendorProfile(
     }catch(e){
         throw e;
     }
+}
+
+async function updateVendorAvailability(vendorId, isAvailable) {
+  try {
+    const result = await pool.query(
+      `UPDATE vendors
+       SET is_available = $1
+       WHERE vendor_id = $2
+       RETURNING *, COALESCE(is_available, true) AS is_available`,
+      [isAvailable, vendorId]
+    );
+
+    return result.rows[0];
+  } catch (e) {
+    throw e;
+  }
 }
 async function getVendorLocation(vendorId) {
     try {
@@ -150,6 +166,7 @@ module.exports = {
     getVendorById,
     getVendorProfile,
     updateVendorProfile,
+    updateVendorAvailability,
     getVendorLocation,
     updateVendorLocation,
     getAllVendorLocations,

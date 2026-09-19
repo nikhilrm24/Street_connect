@@ -119,9 +119,15 @@ function handleLocation(){
                                 className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
                             >
 
-                                <h4 className="text-xl font-bold text-gray-900">
-                                    {vendor.business_name}
-                                </h4>
+                                <div className="flex items-center justify-between gap-3">
+                                    <h4 className="text-xl font-bold text-gray-900">
+                                        {vendor.business_name}
+                                    </h4>
+
+                                    <span className={`rounded-full px-2 py-1 text-xs font-bold ${vendor.is_available ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                                        {vendor.is_available ? "Open" : "Closed"}
+                                    </span>
+                                </div>
 
                                 <p className="mt-2 text-sm font-medium text-emerald-700">
                                     {vendor.category}
@@ -129,6 +135,10 @@ function handleLocation(){
 
                                 <p className="mt-3 text-sm text-gray-600">
                                     📍 {vendor.location_info}
+                                </p>
+
+                                <p className={`mt-3 text-sm font-medium ${vendor.is_available ? "text-green-700" : "text-red-700"}`}>
+                                    {vendor.is_available ? "Accepting orders" : "Not accepting orders"}
                                 </p>
 
                                 <button

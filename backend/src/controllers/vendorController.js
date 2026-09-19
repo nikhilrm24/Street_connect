@@ -4,6 +4,7 @@ const {
     getVendorById,
     getVendorProfile,
     updateVendorProfile,
+    updateVendorAvailability,
     getVendorLocation,
     updateVendorLocation,
     getAllVendorLocations
@@ -74,6 +75,37 @@ async function UpdateVendor(req,res,next) {
         }
         res.status(200).json({success:true,message:"successfully updated"})
     }catch(e){
+        next(e);
+    }
+}
+
+async function updateAvailability(req, res, next) {
+    try {
+        const userId = req.user.id;
+        const { is_available } = req.body;
+
+        if (typeof is_available !== "boolean") {
+            throw new AppError("is_available must be a boolean", 400);
+        }
+
+        const vendorRes = await pool.query(
+            `SELECT vendor_id FROM vendors WHERE user_id = $1`,
+            [userId]
+        );
+
+        if (vendorRes.rows.length === 0) {
+            throw new AppError("Vendor not found", 404);
+        }
+
+        const vendorId = vendorRes.rows[0].vendor_id;
+        const updatedVendor = await updateVendorAvailability(vendorId, is_available);
+
+        res.status(200).json({
+            success: true,
+            message: is_available ? "Shop opened" : "Shop closed",
+            vendor: updatedVendor
+        });
+    } catch (e) {
         next(e);
     }
 }
@@ -151,4 +183,4 @@ async function getAllLocations(req, res, next) {
     }
 }
 
-module.exports={getVendors,getVendor,getProfile,UpdateVendor,getLocation,updateLocation,getAllLocations};
+module.exports={getVendors,getVendor,getProfile,UpdateVendor,updateAvailability,getLocation,updateLocation,getAllLocations};

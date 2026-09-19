@@ -3,6 +3,7 @@ const express = require("express");
 
 const {
   getVendorOrdersController,
+  getVendorSalesSummaryController,
   updateVendorOrderStatus
 } = require("../controllers/orderController");
 
@@ -16,6 +17,13 @@ router.get(
   verifyToken,
   roleMiddleware("vendor"),
   getVendorOrdersController
+);
+
+router.get(
+  "/vendors/sales-summary",
+  verifyToken,
+  roleMiddleware("vendor"),
+  getVendorSalesSummaryController
 );
 
 router.put(

@@ -1,5 +1,6 @@
 const {
   getVendorOrders,
+  getVendorSalesSummary,
   updateOrderStatus
 } = require("../models/ordersModel");
 
@@ -31,6 +32,33 @@ async function getVendorOrdersController(req, res, next) {
       orders
     });
 
+  } catch (e) {
+    next(e);
+  }
+}
+
+async function getVendorSalesSummaryController(req, res, next) {
+  try {
+    const userId = req.user.id;
+
+    const vendorResult = await pool.query(
+      `SELECT vendor_id
+       FROM vendors
+       WHERE user_id = $1`,
+      [userId]
+    );
+
+    if (vendorResult.rows.length === 0) {
+      throw new AppError("Vendor not found", 404);
+    }
+
+    const vendorId = vendorResult.rows[0].vendor_id;
+    const summary = await getVendorSalesSummary(vendorId);
+
+    res.status(200).json({
+      success: true,
+      summary
+    });
   } catch (e) {
     next(e);
   }
@@ -94,5 +122,6 @@ async function updateVendorOrderStatus(req, res, next) {
 
 module.exports = {
   getVendorOrdersController,
+  getVendorSalesSummaryController,
   updateVendorOrderStatus
 };

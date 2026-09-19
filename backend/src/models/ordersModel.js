@@ -2,6 +2,36 @@ const { pool } = require("../db");
 
 async function getVendorOrders(vendorId) {
   try {
+    const tableCheck = await pool.query(
+      `SELECT to_regclass('public.order_items') AS order_items_exists`
+    );
+
+    const hasOrderItemsTable = Boolean(tableCheck.rows[0]?.order_items_exists);
+
+    if (!hasOrderItemsTable) {
+      const result = await pool.query(
+        `SELECT
+          o.order_id,
+          o.customer_id,
+          o.vendor_id,
+          o.status,
+          o.total_amount,
+          o.delivery_type,
+          o.delivery_address,
+          o.created_at,
+          u.name AS customer_name,
+          u.email AS customer_email,
+          '[]'::json AS items
+        FROM orders o
+        JOIN users u ON o.customer_id = u.id
+        WHERE o.vendor_id = $1
+        ORDER BY o.created_at DESC`,
+        [vendorId]
+      );
+
+      return result.rows;
+    }
+
     const result = await pool.query(
       `SELECT
         o.order_id,
@@ -52,6 +82,36 @@ async function getVendorOrders(vendorId) {
   }
 }
 
+async function getVendorSalesSummary(vendorId) {
+  try {
+    const result = await pool.query(
+      `SELECT
+        COUNT(*) FILTER (WHERE DATE(created_at) = CURRENT_DATE) AS today_orders,
+        COUNT(*) FILTER (WHERE status = 'delivered') AS completed_orders,
+        COALESCE(
+          SUM(CASE WHEN DATE(created_at) = CURRENT_DATE AND status = 'delivered' THEN total_amount ELSE 0 END),
+          0
+        ) AS today_sales,
+        COALESCE(
+          SUM(CASE WHEN status = 'delivered' THEN total_amount ELSE 0 END),
+          0
+        ) AS total_sales
+      FROM orders
+      WHERE vendor_id = $1`,
+      [vendorId]
+    );
+
+    return result.rows[0] || {
+      today_orders: 0,
+      completed_orders: 0,
+      today_sales: 0,
+      total_sales: 0
+    };
+  } catch (e) {
+    throw e;
+  }
+}
+
 async function updateOrderStatus(orderId, vendorId, status) {
   const result = await pool.query(
     `UPDATE orders
@@ -92,5 +152,6 @@ async function updateOrderStatus(orderId, vendorId, status) {
 
 module.exports = {
   getVendorOrders,
+  getVendorSalesSummary,
   updateOrderStatus
 };

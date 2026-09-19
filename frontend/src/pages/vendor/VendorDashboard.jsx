@@ -1,8 +1,40 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import NavbarVendor from "../../components/NavbarVendor";
 
 function VendorDashboard() {
   const navigate = useNavigate();
+  const [summary, setSummary] = useState({
+    today_orders: 0,
+    completed_orders: 0,
+    today_sales: 0,
+    total_sales: 0
+  });
+
+  useEffect(() => {
+    const fetchSummary = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get("http://localhost:5000/api/vendors/sales-summary", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        setSummary(response.data.summary || {
+          today_orders: 0,
+          completed_orders: 0,
+          today_sales: 0,
+          total_sales: 0
+        });
+      } catch (error) {
+        console.error("Failed to load sales summary", error);
+      }
+    };
+
+    fetchSummary();
+  }, []);
 
   const cards = [
     {
@@ -29,22 +61,27 @@ function VendorDashboard() {
       action: "Manage Location",
       path: "/vendor/location",
     },
-   {
-  title: "Orders",
-  description: "View and manage customer orders.",
-  action: "Manage Orders",
-  path: "/vendor/orders",
-},
+    {
+      title: "Orders",
+      description: "View and manage customer orders.",
+      action: "Manage Orders",
+      path: "/vendor/orders",
+    },
+  ];
+
+  const stats = [
+    { label: "Today's Orders", value: summary.today_orders },
+    { label: "Completed Orders", value: summary.completed_orders },
+    { label: "Today's Sales", value: `₹${Number(summary.today_sales || 0)}` },
+    { label: "Total Sales", value: `₹${Number(summary.total_sales || 0)}` }
   ];
 
   return (
     <>
-     <NavbarVendor/>
+      <NavbarVendor />
 
       <div className="min-h-screen bg-gray-100 p-6">
         <div className="max-w-6xl mx-auto">
-
-          
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900">
               Vendor Dashboard
@@ -55,7 +92,15 @@ function VendorDashboard() {
             </p>
           </div>
 
-        
+          <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {stats.map((stat) => (
+              <div key={stat.label} className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+                <p className="text-sm font-medium text-gray-500">{stat.label}</p>
+                <p className="mt-3 text-3xl font-bold text-gray-900">{stat.value}</p>
+              </div>
+            ))}
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {cards.map((card) => (
               <div
@@ -88,7 +133,6 @@ function VendorDashboard() {
               </div>
             ))}
           </div>
-
         </div>
       </div>
     </>
