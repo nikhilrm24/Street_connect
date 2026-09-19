@@ -3,6 +3,7 @@ const { getProducts, getProduct,insertProduct,getVendorProductsController,update
 const verifyToken = require("../middleware/authMiddleware");
 const { route } = require("./vendorRoutes");
 const router=express.Router();
+
 router.get("/vendors/products", verifyToken, getVendorProductsController);
 
 router.get("/vendors/:id/products", getProducts);

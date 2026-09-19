@@ -19,7 +19,6 @@ function NavbarVendor() {
           Street Connect
         </Link>
 
-       
         <div className="flex items-center gap-6">
 
           <Link
@@ -55,6 +54,14 @@ function NavbarVendor() {
             className="hover:text-gray-300"
           >
             Location
+          </Link>
+
+          {/* Orders */}
+          <Link
+            to="/vendor/orders"
+            className="hover:text-gray-300"
+          >
+            Orders
           </Link>
 
           <button

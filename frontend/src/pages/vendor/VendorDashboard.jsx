@@ -29,12 +29,12 @@ function VendorDashboard() {
       action: "Manage Location",
       path: "/vendor/location",
     },
-    {
-      title: "Orders",
-      description: "View and manage customer orders.",
-      action: "Coming Soon",
-      path: null,
-    },
+   {
+  title: "Orders",
+  description: "View and manage customer orders.",
+  action: "Manage Orders",
+  path: "/vendor/orders",
+},
   ];
 
   return (
