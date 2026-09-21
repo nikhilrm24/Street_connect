@@ -1,4 +1,4 @@
-<img width="1907" height="932" alt="image" src="https://github.com/user-attachments/assets/bd2b3d3a-2233-4989-8dc3-7ce047c50fbc" /># 🛍️ Street Connect
+# 🛍️ Street Connect
 
 > A full-stack local marketplace that helps roadside and local street vendors build an online presence and connect with nearby customers.
 
