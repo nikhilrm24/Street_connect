@@ -3,7 +3,7 @@ import axios from "axios";
 import { useParams, Link } from "react-router-dom";
 import CustomerChrome from "../components/CustomerChrome";
 import { LoadingState, ErrorState } from "../components/ui";
-import { initials } from "../utils/media";
+import { initials, resolveImageUrl } from "../utils/media";
 
 const CART_KEY = "street_connect_cart";
 
@@ -72,16 +72,13 @@ function ProductDetails() {
 
         {!loading && !error && product ? (
           <div className="page-enter grid gap-8 overflow-hidden rounded-[2rem] border border-sand bg-white shadow-sm lg:grid-cols-2">
-            <div className="stall-pattern flex min-h-72 items-center justify-center p-8 text-white">
-              <div className="text-center">
-                <p className="text-sm font-extrabold uppercase tracking-widest text-sand">
-                  Street find
-                </p>
-                <p className="mt-4 font-display text-6xl font-bold">
-                  {initials(product.product_name)}
-                </p>
+            {product.image_url ? (
+              <img src={resolveImageUrl(product.image_url)} alt={product.product_name} className="min-h-72 w-full object-cover" />
+            ) : (
+              <div className="stall-pattern flex min-h-72 items-center justify-center p-8 text-white">
+                <p className="font-display text-6xl font-bold">{initials(product.product_name)}</p>
               </div>
-            </div>
+            )}
 
             <div className="p-6 sm:p-8">
               <Link to={`/vendors/${product.vendor_id}`} className="text-sm font-extrabold text-leaf">

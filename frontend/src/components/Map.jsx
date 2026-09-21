@@ -1,48 +1,39 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import {
   GoogleMap,
+  InfoWindow,
   LoadScript,
   Marker,
 } from "@react-google-maps/api";
 
-function Map() {
-  const [center, setCenter] = useState({
+function Map({ location, vendorLocations = [] }) {
+  const [center, setCenter] = useState(location || {
     lat: 12.9716,
     lng: 77.5946,
   });
-
-  const [vendorLocations, setVendorLocations] = useState([]);
+  const [selectedVendor, setSelectedVendor] = useState(null);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        setCenter({
+        if (!location) {
+          setCenter({
           lat: position.coords.latitude,
           lng: position.coords.longitude,
-        });
+          });
+        }
       },
-      (error) => {
+      () => {
         console.log("Location permission denied");
       }
     );
-  }, []);
+  }, [location]);
 
-  useEffect(() => {
-    const fetchVendorLocations = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:5000/api/vendors/locations"
-        );
-
-        setVendorLocations(response.data.locations);
-      } catch (error) {
-        console.error("Failed to load vendor locations", error);
-      }
-    };
-
-    fetchVendorLocations();
-  }, []);
+  const validLocations = vendorLocations.filter((vendorLocation) => {
+    const latitude = Number(vendorLocation.latitude);
+    const longitude = Number(vendorLocation.longitude);
+    return Number.isFinite(latitude) && Number.isFinite(longitude);
+  });
 
   return (
     <LoadScript
@@ -56,15 +47,45 @@ function Map() {
         center={center}
         zoom={13}
       >
-        {vendorLocations.map((location) => (
+        {location ? (
           <Marker
-            key={location.location_id}
+            position={location}
+            label={{ text: "You", color: "#ffffff", fontWeight: "700" }}
+          />
+        ) : null}
+        {validLocations.map((vendorLocation) => (
+          <Marker
+            key={vendorLocation.location_id || vendorLocation.vendor_id}
             position={{
-              lat: Number(location.latitude),
-              lng: Number(location.longitude),
+              lat: Number(vendorLocation.latitude),
+              lng: Number(vendorLocation.longitude),
             }}
+            label={{
+              text: String(vendorLocation.business_name || "Stall").slice(0, 10),
+              color: "#ffffff",
+              fontWeight: "700",
+            }}
+            onClick={() => setSelectedVendor(vendorLocation)}
           />
         ))}
+        {selectedVendor ? (
+          <InfoWindow
+            position={{
+              lat: Number(selectedVendor.latitude),
+              lng: Number(selectedVendor.longitude),
+            }}
+            onCloseClick={() => setSelectedVendor(null)}
+          >
+            <div className="min-w-32">
+              <strong className="text-base">
+                {selectedVendor.business_name || "Unnamed stall"}
+              </strong>
+              {selectedVendor.category ? (
+                <div className="mt-1 text-sm">{selectedVendor.category}</div>
+              ) : null}
+            </div>
+          </InfoWindow>
+        ) : null}
       </GoogleMap>
     </LoadScript>
   );

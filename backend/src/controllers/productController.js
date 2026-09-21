@@ -58,6 +58,7 @@ async function insertProduct(req, res, next) {
             price,
             stock
         } = req.body;
+        const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
         const product = await addProduct(
             vendorId,
@@ -65,7 +66,8 @@ async function insertProduct(req, res, next) {
             product_name,
             description,
             price,
-            stock
+            stock,
+            imageUrl
         );
 
         res.status(201).json({

@@ -5,6 +5,19 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import CustomerChrome from "../components/CustomerChrome";
 import { ShopCover, StatusBadge, EmptyState } from "../components/ui";
 
+function distanceInKilometers(from, to) {
+  const earthRadius = 6371;
+  const latitudeDelta = ((to.lat - from.lat) * Math.PI) / 180;
+  const longitudeDelta = ((to.lng - from.lng) * Math.PI) / 180;
+  const fromLatitude = (from.lat * Math.PI) / 180;
+  const toLatitude = (to.lat * Math.PI) / 180;
+  const haversine =
+    Math.sin(latitudeDelta / 2) ** 2 +
+    Math.cos(fromLatitude) * Math.cos(toLatitude) * Math.sin(longitudeDelta / 2) ** 2;
+
+  return earthRadius * 2 * Math.atan2(Math.sqrt(haversine), Math.sqrt(1 - haversine));
+}
+
 function Vendors() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -65,6 +78,21 @@ function Vendors() {
       : true;
     return matchesSearch && matchesCategory;
   });
+
+  const getVendorDistance = (vendorId) => {
+    if (!location) return null;
+
+    const vendorLocation = vendorLocations.find(
+      (item) => String(item.vendor_id) === String(vendorId)
+    );
+    if (!vendorLocation) return null;
+
+    const latitude = Number(vendorLocation.latitude);
+    const longitude = Number(vendorLocation.longitude);
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return null;
+
+    return distanceInKilometers(location, { lat: latitude, lng: longitude });
+  };
 
   return (
     <CustomerChrome>
@@ -155,6 +183,15 @@ function Vendors() {
                     </div>
                     <p className="mt-2 text-sm font-extrabold text-leaf">{vendor.category}</p>
                     <p className="mt-3 text-sm text-mute">📍 {vendor.location_info}</p>
+                    {getVendorDistance(vendor.vendor_id) != null ? (
+                      <p className="mt-2 text-sm font-extrabold text-forest">
+                        {getVendorDistance(vendor.vendor_id).toFixed(1)} km away
+                      </p>
+                    ) : (
+                      <p className="mt-2 text-xs font-semibold text-mute">
+                        Use your location to see distance
+                      </p>
+                    )}
                     {vendor.rating != null ? (
                       <p className="mt-2 text-sm font-semibold">⭐ {vendor.rating}</p>
                     ) : null}

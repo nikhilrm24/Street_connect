@@ -1,4 +1,5 @@
 const express=require("express");
+const { ensureProductImageColumn } = require("./src/db");
 const app=express();
 const cors=require("cors");
 const path = require("path");
@@ -25,6 +26,13 @@ app.use("/api", categoryrouter);
 
 app.use(errorMiddleware);
 
-app.listen(5000,()=>{
-    console.log("server listneing on 5000");
-})
+ensureProductImageColumn()
+  .then(() => {
+    app.listen(5000,()=>{
+      console.log("server listneing on 5000");
+    });
+  })
+  .catch((error) => {
+    console.error("Failed to prepare database", error);
+    process.exit(1);
+  });

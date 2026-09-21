@@ -31,15 +31,16 @@ async function addProduct(
     product_name,
     description,
     price,
-    stock
+    stock,
+    imageUrl
 ) {
     try {
         const result = await pool.query(
             `INSERT INTO products
-            (vendor_id, category_id, product_name, description, price, stock)
-            VALUES ($1, $2, $3, $4, $5, $6)
+            (vendor_id, category_id, product_name, description, price, stock, image_url)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
             RETURNING *`,
-            [vendorId, category_id, product_name, description, price, stock]
+            [vendorId, category_id, product_name, description, price, stock, imageUrl]
         );
 
         return result.rows[0];

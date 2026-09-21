@@ -3,7 +3,7 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import CustomerChrome from "../components/CustomerChrome";
 import { ShopCover, StatusBadge, LoadingState, ErrorState, EmptyState } from "../components/ui";
-import { initials } from "../utils/media";
+import { initials, resolveImageUrl } from "../utils/media";
 
 function VendorDetails() {
   const { id } = useParams();
@@ -106,11 +106,13 @@ function VendorDetails() {
                     className="overflow-hidden rounded-3xl border border-sand bg-white text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                     onClick={() => navigate(`/products/${product.product_id}`)}
                   >
-                    <div className="stall-pattern flex h-36 items-center justify-center text-white">
-                      <span className="font-display text-3xl font-bold">
-                        {initials(product.product_name)}
-                      </span>
-                    </div>
+                    {product.image_url ? (
+                      <img src={resolveImageUrl(product.image_url)} alt={product.product_name} className="h-36 w-full object-cover" />
+                    ) : (
+                      <div className="stall-pattern flex h-36 items-center justify-center text-white">
+                        <span className="font-display text-3xl font-bold">{initials(product.product_name)}</span>
+                      </div>
+                    )}
                     <div className="p-4">
                       <h3 className="font-display text-lg font-bold">{product.product_name}</h3>
                       <p className="mt-1 line-clamp-2 text-sm text-mute">{product.description}</p>

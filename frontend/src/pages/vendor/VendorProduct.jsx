@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import VendorChrome from "../../components/VendorChrome";
 import { EmptyState, ErrorState, LoadingState } from "../../components/ui";
-import { initials } from "../../utils/media";
+import { initials, resolveImageUrl } from "../../utils/media";
 
 function VendorProducts() {
   const navigate = useNavigate();
@@ -77,11 +77,13 @@ function VendorProducts() {
                 key={product.product_id}
                 className="overflow-hidden rounded-3xl border border-sand bg-white shadow-sm"
               >
-                <div className="stall-pattern flex h-40 items-center justify-center text-white">
-                  <span className="font-display text-4xl font-bold">
-                    {initials(product.product_name)}
-                  </span>
-                </div>
+                {product.image_url ? (
+                  <img src={resolveImageUrl(product.image_url)} alt={product.product_name} className="h-40 w-full object-cover" />
+                ) : (
+                  <div className="stall-pattern flex h-40 items-center justify-center text-white">
+                    <span className="font-display text-4xl font-bold">{initials(product.product_name)}</span>
+                  </div>
+                )}
                 <div className="p-5">
                   <h2 className="font-display text-2xl font-bold">{product.product_name}</h2>
                   <p className="mt-2 text-mute">{product.description}</p>

@@ -10,4 +10,8 @@ const pool=new Pool({
 
 })
 
-module.exports={pool};
+async function ensureProductImageColumn() {
+    await pool.query(`ALTER TABLE products ADD COLUMN IF NOT EXISTS image_url TEXT`);
+}
+
+module.exports={pool, ensureProductImageColumn};

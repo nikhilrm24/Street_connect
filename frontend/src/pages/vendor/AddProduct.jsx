@@ -11,6 +11,7 @@ function AddProduct() {
     price: "",
     stock: "",
   });
+  const [productImage, setProductImage] = useState(null);
   const [categories, setCategories] = useState([]);
   const [message, setMessage] = useState("");
 
@@ -36,15 +37,13 @@ function AddProduct() {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.post(
-        "http://localhost:5000/api/vendors/products",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const payload = new FormData();
+      Object.entries(formData).forEach(([key, value]) => payload.append(key, value));
+      if (productImage) payload.append("product_image", productImage);
+
+      const response = await axios.post("http://localhost:5000/api/vendors/products", payload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       setMessage("Product added successfully");
       console.log(response.data);
@@ -56,6 +55,7 @@ function AddProduct() {
         price: "",
         stock: "",
       });
+      setProductImage(null);
     } catch (error) {
       console.error(error);
       setMessage("Failed to add product");
@@ -79,10 +79,26 @@ function AddProduct() {
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-5 rounded-[2rem] border border-sand bg-white p-6 shadow-sm">
           <div className="stall-pattern flex h-40 items-center justify-center rounded-3xl text-white">
-            <p className="px-6 text-center font-extrabold">
-              Product photos are not stored yet. A clear name and price still help customers find you.
-            </p>
+            {productImage ? (
+              <img
+                src={URL.createObjectURL(productImage)}
+                alt="Product preview"
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <p className="px-6 text-center font-extrabold">Add a clear photo of your product.</p>
+            )}
           </div>
+
+          <Field label="Product photo">
+            <input
+              type="file"
+              accept="image/jpeg,image/png"
+              onChange={(event) => setProductImage(event.target.files?.[0] || null)}
+              className={fieldClass}
+            />
+            <span className="mt-1 block text-sm text-mute">JPG or PNG, up to 5 MB.</span>
+          </Field>
 
           <Field label="1. Product name">
             <input

@@ -153,7 +153,12 @@ async function createVendor(
 async function getAllVendorLocations() {
     try {
         const result = await pool.query(
-            `SELECT * FROM vendor_locations`
+      `SELECT
+        vl.*,
+        v.business_name,
+        v.category
+       FROM vendor_locations vl
+       INNER JOIN vendors v ON v.vendor_id = vl.vendor_id`
         );
 
         return result.rows;
