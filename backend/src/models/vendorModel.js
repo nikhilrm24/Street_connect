@@ -161,6 +161,35 @@ async function getAllVendorLocations() {
         throw e;
     }
 }
+
+async function deleteVendor(vendorId) {
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+    await client.query("DELETE FROM vendor_locations WHERE vendor_id = $1", [vendorId]);
+    await client.query("DELETE FROM products WHERE vendor_id = $1", [vendorId]);
+    await client.query("UPDATE orders SET vendor_id = NULL WHERE vendor_id = $1", [vendorId]);
+
+    const result = await client.query(
+      "DELETE FROM vendors WHERE vendor_id = $1 RETURNING vendor_id",
+      [vendorId]
+    );
+
+    if (result.rows.length === 0) {
+      await client.query("ROLLBACK");
+      return null;
+    }
+
+    await client.query("COMMIT");
+    return result.rows[0];
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
+}
 module.exports = {
     getAllVendors,
     getVendorById,
@@ -170,5 +199,6 @@ module.exports = {
     getVendorLocation,
     updateVendorLocation,
     getAllVendorLocations,
-    createVendor
+    createVendor,
+    deleteVendor
 };

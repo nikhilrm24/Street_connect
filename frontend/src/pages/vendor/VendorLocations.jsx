@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import VendorChrome from "../../components/VendorChrome";
 
 function VendorLocation() {
   const [location, setLocation] = useState(null);
@@ -55,47 +56,39 @@ function VendorLocation() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">
-        Shop Location
-      </h1>
-
-      <div className="bg-white shadow rounded-lg p-6">
-        <p className="text-gray-600 mb-6">
-          Use your current location to set your shop location.
+    <VendorChrome>
+      <main className="mx-auto max-w-2xl px-4 py-6 sm:px-6">
+        <h1 className="font-display text-3xl font-bold">Shop Location</h1>
+        <p className="mt-3 text-lg text-mute">
+          Customers nearby can find your shop using your location.
         </p>
 
-        <button
-          onClick={handleGetLocation}
-          disabled={loading}
-          className="w-full bg-black text-white rounded p-3"
-        >
-          {loading ? "Getting Location..." : "📍 Use My Current Location"}
-        </button>
+        <div className="mt-6 overflow-hidden rounded-[2rem] border border-sand bg-white shadow-sm">
+          <div className="stall-pattern flex h-40 items-center justify-center text-white">
+            <p className="px-6 text-center font-display text-2xl font-bold">Pin your stall</p>
+          </div>
+          <div className="p-6">
+            <button
+              onClick={handleGetLocation}
+              disabled={loading}
+              className="w-full min-h-16 rounded-2xl bg-clay text-xl font-black text-white hover:bg-clay-dark disabled:opacity-60"
+            >
+              {loading ? "Getting Location..." : "📍 Use My Current Location"}
+            </button>
 
-        {message && (
-          <p className="text-center mt-4">
-            {message}
-          </p>
-        )}
-      </div>
+            {message ? (
+              <p className="mt-4 text-center text-lg font-bold text-forest">{message}</p>
+            ) : null}
 
-      {location && (
-        <div className="mt-6 bg-gray-100 rounded-lg p-4">
-          <h2 className="font-bold">
-            Current Shop Location
-          </h2>
-
-          <p className="mt-2">
-            Latitude: {location.latitude}
-          </p>
-
-          <p>
-            Longitude: {location.longitude}
-          </p>
+            {location ? (
+              <p className="mt-5 rounded-2xl bg-emerald-50 p-4 text-center font-extrabold text-emerald-900">
+                Your shop location is saved. Nearby customers can find you.
+              </p>
+            ) : null}
+          </div>
         </div>
-      )}
-    </div>
+      </main>
+    </VendorChrome>
   );
 }
 

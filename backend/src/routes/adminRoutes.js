@@ -1,5 +1,8 @@
 const express = require("express");
-const { getAdminOverviewController } = require("../controllers/adminController");
+const {
+  getAdminOverviewController,
+  deleteVendorController
+} = require("../controllers/adminController");
 const verifyToken = require("../middleware/authMiddleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
 
@@ -10,6 +13,13 @@ router.get(
   verifyToken,
   roleMiddleware("admin"),
   getAdminOverviewController
+);
+
+router.delete(
+  "/admin/vendors/:id",
+  verifyToken,
+  roleMiddleware("admin"),
+  deleteVendorController
 );
 
 module.exports = router;

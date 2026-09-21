@@ -17,7 +17,7 @@ import CustomerNotifications from "./pages/CustomerNotifications";
 import AdminDashboard from "./pages/AdminDashboard";
 
 
-import VendorDashboard from "./pages/vendor/VendorDashBoard";
+import VendorDashboard from "./pages/vendor/VendorDashboard";
 import VendorProducts from "./pages/vendor/VendorProduct";
 import AddProduct from "./pages/vendor/AddProduct";
 import EditProduct from "./pages/vendor/EditProduct";

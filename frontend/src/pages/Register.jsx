@@ -1,17 +1,17 @@
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Field, fieldClass } from "../components/ui";
 
 function Register() {
   const navigate = useNavigate();
 
-  // Common user fields
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState("customer");
 
-  // Vendor fields
   const [businessName, setBusinessName] = useState("");
   const [category, setCategory] = useState("");
   const [phone, setPhone] = useState("");
@@ -19,7 +19,6 @@ function Register() {
   const [deliveryInfo, setDeliveryInfo] = useState("");
   const [shopImage, setShopImage] = useState(null);
 
-  // UI state
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -29,11 +28,7 @@ function Register() {
 
     if (!file) return;
 
-    const allowedTypes = [
-      "image/jpeg",
-      "image/jpg",
-      "image/png"
-    ];
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
 
     if (!allowedTypes.includes(file.type)) {
       setError("Only JPG, JPEG and PNG images are allowed");
@@ -55,13 +50,11 @@ function Register() {
     try {
       const formData = new FormData();
 
-      // Common fields
       formData.append("name", name);
       formData.append("email", email);
       formData.append("password", password);
       formData.append("role", role);
 
-      // Vendor fields
       if (role === "vendor") {
         formData.append("business_name", businessName);
         formData.append("category", category);
@@ -74,16 +67,10 @@ function Register() {
         }
       }
 
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
-        formData
-      );
+      const response = await axios.post("http://localhost:5000/api/auth/register", formData);
 
-      setMessage(
-        response.data.message || "Registration successful!"
-      );
+      setMessage(response.data.message || "Registration successful!");
 
-      // Clear form
       setName("");
       setEmail("");
       setPassword("");
@@ -99,15 +86,11 @@ function Register() {
       setTimeout(() => {
         navigate("/login");
       }, 1500);
+    } catch (requestError) {
+      console.error(requestError);
 
-    } catch (error) {
-      console.error(error);
-
-      if (error.response) {
-        setError(
-          error.response.data.message ||
-          "Registration failed"
-        );
+      if (requestError.response) {
+        setError(requestError.response.data.message || "Registration failed");
       } else {
         setError("Unable to connect to server");
       }
@@ -117,239 +100,178 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-cream px-4 py-8">
+      <div className="mx-auto w-full max-w-lg overflow-hidden rounded-[2rem] border border-sand bg-white shadow-xl">
+        <div className="stall-pattern px-6 py-8 text-white">
+          <Link to="/home" className="font-display text-2xl font-bold">
+            Street Connect
+          </Link>
+          <h1 className="mt-3 font-display text-3xl font-bold">Create Account</h1>
+          <p className="mt-1 text-sand">Join as a shopper or open your stall.</p>
+        </div>
 
-      <div className="w-full max-w-lg bg-white shadow-lg rounded-xl p-8">
+        <form onSubmit={handleRegister} className="space-y-5 p-6 sm:p-8">
+          <div className="grid grid-cols-2 gap-2 rounded-2xl bg-cream p-1">
+            {[
+              ["customer", "Customer"],
+              ["vendor", "Vendor"],
+            ].map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setRole(value)}
+                className={`min-h-12 rounded-xl font-extrabold ${
+                  role === value ? "bg-forest text-white" : "text-ink"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
 
-        <h1 className="text-3xl font-bold text-center mb-2">
-          Create Account
-        </h1>
-
-        <p className="text-center text-gray-500 mb-8">
-          Join Street Connect
-        </p>
-
-        <form onSubmit={handleRegister} className="space-y-5">
-
-          {/* Name */}
-          <div>
-            <label className="block font-medium mb-1">
-              Name
-            </label>
-
+          <Field label="Name">
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Enter your name"
               required
-              className="w-full border rounded-lg p-3"
+              className={fieldClass}
             />
-          </div>
+          </Field>
 
-          {/* Email */}
-          <div>
-            <label className="block font-medium mb-1">
-              Email
-            </label>
-
+          <Field label="Email">
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               required
-              className="w-full border rounded-lg p-3"
+              className={fieldClass}
             />
-          </div>
+          </Field>
 
-          {/* Password */}
-          <div>
-            <label className="block font-medium mb-1">
-              Password
-            </label>
+          <Field label="Password">
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                required
+                className={`${fieldClass} pr-24`}
+              />
+              <button
+                type="button"
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-xl px-3 py-2 text-sm font-extrabold text-forest"
+                onClick={() => setShowPassword((open) => !open)}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+          </Field>
 
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              required
-              className="w-full border rounded-lg p-3"
-            />
-          </div>
-
-          {/* Role */}
-          <div>
-            <label className="block font-medium mb-1">
-              Account Type
-            </label>
-
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full border rounded-lg p-3"
-            >
-              <option value="customer">Customer</option>
-              <option value="vendor">Vendor</option>
-            </select>
-          </div>
-
-          {/* Vendor Fields */}
           {role === "vendor" && (
-            <div className="border-t pt-5 mt-5 space-y-5">
+            <div className="space-y-5 border-t border-sand pt-5">
+              <h2 className="font-display text-xl font-bold">Shop Details</h2>
 
-              <h2 className="text-xl font-bold">
-                Shop Details
-              </h2>
+              <Field label="Shop photo">
+                <input
+                  type="file"
+                  accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                  onChange={handleImageChange}
+                  className={fieldClass}
+                />
+                {shopImage && (
+                  <div className="mt-3">
+                    <p className="mb-2 text-sm text-mute">Selected: {shopImage.name}</p>
+                    <img
+                      src={URL.createObjectURL(shopImage)}
+                      alt="Shop preview"
+                      className="h-48 w-full rounded-2xl object-cover"
+                    />
+                  </div>
+                )}
+              </Field>
 
-              {/* Business Name */}
-              <div>
-                <label className="block font-medium mb-1">
-                  Business Name
-                </label>
-
+              <Field label="Business Name">
                 <input
                   type="text"
                   value={businessName}
                   onChange={(e) => setBusinessName(e.target.value)}
                   placeholder="Enter your shop name"
                   required
-                  className="w-full border rounded-lg p-3"
+                  className={fieldClass}
                 />
-              </div>
+              </Field>
 
-              {/* Category */}
-              <div>
-                <label className="block font-medium mb-1">
-                  Category
-                </label>
-
+              <Field label="Category">
                 <input
                   type="text"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                   placeholder="Example: Fruits, Tea, Flowers"
                   required
-                  className="w-full border rounded-lg p-3"
+                  className={fieldClass}
                 />
-              </div>
+              </Field>
 
-              {/* Phone */}
-              <div>
-                <label className="block font-medium mb-1">
-                  Phone
-                </label>
-
+              <Field label="Phone">
                 <input
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="Enter phone number"
                   required
-                  className="w-full border rounded-lg p-3"
+                  className={fieldClass}
                 />
-              </div>
+              </Field>
 
-              {/* Location */}
-              <div>
-                <label className="block font-medium mb-1">
-                  Shop Location
-                </label>
-
+              <Field label="Shop Location">
                 <input
                   type="text"
                   value={locationInfo}
                   onChange={(e) => setLocationInfo(e.target.value)}
                   placeholder="Example: Yelahanka, Bangalore"
                   required
-                  className="w-full border rounded-lg p-3"
+                  className={fieldClass}
                 />
-              </div>
+              </Field>
 
-              {/* Delivery */}
-              <div>
-                <label className="block font-medium mb-1">
-                  Delivery Information
-                </label>
-
+              <Field label="Delivery Information">
                 <input
                   type="text"
                   value={deliveryInfo}
                   onChange={(e) => setDeliveryInfo(e.target.value)}
                   placeholder="Example: Home delivery available"
                   required
-                  className="w-full border rounded-lg p-3"
+                  className={fieldClass}
                 />
-              </div>
-
-              {/* Shop Image */}
-              <div>
-                <label className="block font-medium mb-1">
-                  Shop Image
-                </label>
-
-                <input
-                  type="file"
-                  accept=".jpg,.jpeg,.png,image/jpeg,image/png"
-                  onChange={handleImageChange}
-                  className="w-full border rounded-lg p-3"
-                />
-
-                {shopImage && (
-                  <div className="mt-3">
-                    <p className="text-sm text-gray-600 mb-2">
-                      Selected: {shopImage.name}
-                    </p>
-
-                    <img
-                      src={URL.createObjectURL(shopImage)}
-                      alt="Shop preview"
-                      className="w-full h-48 object-cover rounded-lg"
-                    />
-                  </div>
-                )}
-              </div>
-
+              </Field>
             </div>
           )}
 
-          {/* Error */}
-          {error && (
-            <p className="text-red-600 text-center">
-              {error}
-            </p>
-          )}
+          {error && <p className="text-center font-bold text-red-700">{error}</p>}
+          {message && <p className="text-center font-bold text-emerald-700">{message}</p>}
 
-          {/* Success */}
-          {message && (
-            <p className="text-green-600 text-center">
-              {message}
-            </p>
-          )}
-
-          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-black text-white rounded-lg p-3 font-medium hover:bg-gray-800 disabled:opacity-50"
+            className="w-full min-h-14 rounded-2xl bg-clay text-lg font-black text-white hover:bg-clay-dark disabled:opacity-50"
           >
             {loading ? "Creating Account..." : "Register"}
           </button>
-
         </form>
 
-        {/* Login */}
-        <p className="text-center text-gray-600 mt-6">
+        <p className="px-6 pb-8 text-center text-mute">
           Already have an account?{" "}
           <button
             onClick={() => navigate("/login")}
-            className="font-semibold text-black hover:underline"
+            className="font-extrabold text-forest hover:underline"
           >
             Login
           </button>
         </p>
-
       </div>
     </div>
   );

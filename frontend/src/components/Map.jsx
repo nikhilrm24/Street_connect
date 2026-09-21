@@ -51,7 +51,7 @@ function Map() {
       <GoogleMap
         mapContainerStyle={{
           width: "100%",
-          height: "500px",
+          height: "min(420px, 55vh)",
         }}
         center={center}
         zoom={13}
