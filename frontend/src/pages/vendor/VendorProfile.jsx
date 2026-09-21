@@ -30,7 +30,7 @@ function VendorProfile() {
   };
 
   useEffect(() => {
-    fetchProfile();
+    Promise.resolve().then(fetchProfile);
   }, []);
 
   const handleAvailabilityToggle = async () => {

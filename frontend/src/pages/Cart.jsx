@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import CustomerChrome from "../components/CustomerChrome";
 import { EmptyState } from "../components/ui";
@@ -8,11 +8,7 @@ const CART_KEY = "street_connect_cart";
 
 function Cart() {
   const navigate = useNavigate();
-  const [cart, setCart] = useState([]);
-
-  useEffect(() => {
-    setCart(JSON.parse(localStorage.getItem(CART_KEY) || "[]"));
-  }, []);
+  const [cart, setCart] = useState(() => JSON.parse(localStorage.getItem(CART_KEY) || "[]"));
 
   const saveCart = (updatedCart) => {
     setCart(updatedCart);

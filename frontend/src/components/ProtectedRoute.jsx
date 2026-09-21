@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { Navigate } from "react-router-dom";
 function getTokenPayload(token) {
     try {
@@ -10,10 +11,11 @@ function getTokenPayload(token) {
 }
 
 function ProtectedRoute({ children, allowedRoles }) {
+    const [currentTime] = useState(() => Date.now());
     const token = localStorage.getItem("token");
     const payload = token ? getTokenPayload(token) : null;
 
-    if (!token || !payload || (payload.exp && payload.exp * 1000 <= Date.now())) {
+    if (!token || !payload || (payload.exp && payload.exp * 1000 <= currentTime)) {
         localStorage.removeItem("token");
         return <Navigate to="/login" replace />;
     }

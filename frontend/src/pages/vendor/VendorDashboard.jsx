@@ -104,7 +104,7 @@ function VendorDashboard() {
   };
 
   useEffect(() => {
-    loadDashboard();
+    Promise.resolve().then(loadDashboard);
   }, []);
 
   const handleAvailabilityToggle = async () => {
